@@ -35,19 +35,15 @@
 //
 
 /**
- * uses PEAR error management
+ * AMENDS FOR COMPOSER
+ *
+ * ray osuji/viral-vector <vectorviral@gmail.com>
  */
-require_once 'PEAR.php';
-
-/**
- * uses XML_Serializer to read result
- */
-require_once 'XML/Unserializer.php';
-
-/**
- * uses HTTP to send the request
- */
-require_once 'HTTP/Request.php';
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\Serializer\Encoder\XmlEncoder;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use GuzzleHttp\Client;
 
 /**
  * Services_EVDB
@@ -73,7 +69,7 @@ require_once 'HTTP/Request.php';
  * @package		Services_EVDB
  * @version		0.5.2
  */
-class Services_EVDB
+class EVDB
 {
    /**
     * URI of the REST API
@@ -81,7 +77,7 @@ class Services_EVDB
     * @access  public
     * @var     string
     */
-    var $api_root = 'http://api.evdb.com';
+    private $api_root = 'http://api.evdb.com';
         
    /**
     * Application key (as provided by http://api.evdb.com)
@@ -89,7 +85,7 @@ class Services_EVDB
     * @access  public
     * @var     string
     */
-    var $app_key   = null;
+    private $app_key   = null;
 
    /**
     * Username
@@ -97,7 +93,7 @@ class Services_EVDB
     * @access  private
     * @var     string
     */
-    var $user   = null;
+    private $user   = null;
 
    /**
     * Password
@@ -105,7 +101,7 @@ class Services_EVDB
     * @access  private
     * @var     string
     */
-    var $_password = null;
+    private $_password = null;
     
    /**
     * User authentication key
@@ -113,7 +109,7 @@ class Services_EVDB
     * @access  private
     * @var     string
     */
-    var $user_key = null;
+    private $user_key = null;
     
    /**
     * Latest request URI
@@ -121,7 +117,7 @@ class Services_EVDB
     * @access  private
     * @var     string
     */
-    var $_request_uri = null;
+    private $_request_uri = null;
     
    /**
     * Latest XML response
@@ -129,15 +125,15 @@ class Services_EVDB
     * @access  private
     * @var     string
     */
-    var $_xml_response = null;
-    
+    private $_xml_response = null;
+
    /**
     * Latest XML response as unserialized data
     *
     * @access  private
     * @var     array
     */
-    var $_response_data = null;
+    private $_response_data = null;
     
    /**
     * Create a new client
@@ -145,18 +141,16 @@ class Services_EVDB
     * @access  public
     * @param   string      app_key
     */
-    function Services_EVDB($app_key)
+    function __construct($app_key)
     {
         $this->app_key = $app_key;
     }
-    
-   /**
-    * Log in and verify the user.
-    *
-    * @access  public
-    * @param   string      user
-    * @param   string      password
-    */
+
+    /**
+     * @param $user
+     * @param $password
+     * @return int
+     */
     function login($user, $password)
     {
         $this->user     = $user;
@@ -189,14 +183,13 @@ class Services_EVDB
         
         return 1;
     }
-    
-   /**
-    * Call a method on the EVDB API.
-    *
-    * @access  public
-    * @param   string      args
-    * @param   array       forceEnum
-    */
+
+    /**
+     * @param $method
+     * @param array $args
+     * @param array $forceEnum
+     * @return mixed
+     */
     function call($method, $args=array(), $forceEnum=array()) 
     {
         /* Methods may or may not have a leading slash.
@@ -207,7 +200,7 @@ class Services_EVDB
          */
         $url = $this->api_root . '/rest/' . $method;
         $this->_request_uri = $url;
-        $req = &new HTTP_Request($url);
+        $req = new HTTP_Request($url);
         $req->setMethod(HTTP_REQUEST_METHOD_POST);
         
         /* Add each argument to the POST body.
@@ -349,7 +342,7 @@ class Services_EVDB
     
         /* Prepare XML_Unserializer.
          */
-        $unserializer = &new XML_Unserializer();
+        $unserializer = new XML_Unserializer();
         $unserializer->setOption('parseAttributes', true);
         $unserializer->setOption('forceEnum', $forceEnum);
         
@@ -366,7 +359,7 @@ class Services_EVDB
         $response = $req->getResponseBody();
         $this->_xml_response = $response;
         $status = $unserializer->unserialize($response);
-    
+
         /* Deal with serialization errors.
          */
         if(PEAR::isError($status)) 
