@@ -2,7 +2,7 @@
 
 namespace ViralVector\LocalEvents\Drivers;
 
-
+use Services_EVDB;
 use ViralVector\LocalEvents\Contracts\LocalEventsSearchInterface;
 
 class EventfulLocalEventsDriver implements LocalEventsSearchInterface
@@ -18,7 +18,7 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
      */
     public function __construct()
     {
-        $this->eventful = new Services_EVDB();
+        $this->eventful = new Services_EVDB(config('local-events.key'));
     }
 
     public static function search($query, $callback = null)
