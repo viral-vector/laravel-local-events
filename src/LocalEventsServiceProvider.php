@@ -20,12 +20,12 @@ class LocalEventsServiceProvider extends ServiceProvider
     {
         if ($this->app->runningInConsole()) {
             $this->publishes([
-                __DIR__ . '/../config/local-events.php' => config_path('local-events.php'),
+                __DIR__ . '/../config/localevents.php' => config_path('localevents.php'),
             ]);
         }
 
         $this->app->singleton(LocalEventsSearchInterface::class, function ($app) {
-            config(['local-events' => config('local-events.drivers.eventful')]);
+            config(['localevents' => config('localevents.drivers.eventful')]);
 
             return $app->make(EventfulLocalEventsDriver::class);
         });
