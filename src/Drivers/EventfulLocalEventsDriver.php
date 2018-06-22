@@ -1,7 +1,9 @@
 <?php
 
-namespace ViralVector\LaravelScoutElastic\Contracts;
+namespace ViralVector\LocalEvents\Drivers;
 
+
+use ViralVector\LocalEvents\Contracts\LocalEventsSearchInterface;
 
 class EventfulLocalEventsDriver implements LocalEventsSearchInterface
 {
@@ -15,6 +17,6 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
 
     public static function search($query, $callback = null)
     {
-        // TODO: Implement search() method.
+
     }
 }

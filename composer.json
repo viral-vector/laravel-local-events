@@ -14,13 +14,13 @@
     },
     "autoload": {
         "psr-4": {
-            "ViralVector\\LaravelLocalEvents\\": "src/"
+            "ViralVector\\LocalEvents\\": "src/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "ViralVector\\LaravelLocalEvents\\LaravelLocalEventsServiceProvider"
+                "ViralVector\\LocalEvents\\LocalEventsServiceProvider"
             ]
         }
     },

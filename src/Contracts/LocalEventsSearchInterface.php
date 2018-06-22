@@ -1,6 +1,6 @@
 <?php
 
-namespace ViralVector\LaravelScoutElastic\Contracts;
+namespace ViralVector\LocalEvents\Contracts;
 
 interface LocalEventsSearchInterface
 {

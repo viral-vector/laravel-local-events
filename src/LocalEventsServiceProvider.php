@@ -1,10 +1,10 @@
 <?php
 
-namespace ViralVector\LaravelScoutElastic;
+namespace ViralVector\LocalEvents;
 
 use Illuminate\Support\ServiceProvider;
 
-class LaravelLocalEventsServiceProvider extends ServiceProvider
+class LocalEventsServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
