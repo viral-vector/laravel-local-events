@@ -1,4 +1,5 @@
 /vendor
+/providers
 /.env
 composer.phar
 composer.lock
