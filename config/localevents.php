@@ -38,15 +38,7 @@ return [
             'key' => env('LOCAL_EVENTS_KEY', null),
             'class' => \ViralVector\LocalEvents\Drivers\EventfulLocalEventsDriver::class,
             'model_map' => [
-                'id' => null,
-                'url ' => null,
-                'title' => null,
-                'description' => null,
-                'start_time' => null,
-                'stop_time' => null,
-                'city_name' => null,
-                'latitude' => null,
-                'longitude' => null
+                // model_key => api_key or [..api_keys]
             ]
         ]
     ],

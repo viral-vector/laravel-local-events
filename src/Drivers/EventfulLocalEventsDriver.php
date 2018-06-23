@@ -79,8 +79,8 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
             $item = json_decode(json_encode($event));
             if(isset($model)){
                 $model = new $model;
-                foreach ($mapps as $apiKey => $modelAttr){
-                    $model->$modelAttr = $item[$apiKey];
+                foreach ($mapps as $model_key => $api_key){
+                    $model->$model_key = $item->$api_key;
                 }
                 $item = $model;
             }
