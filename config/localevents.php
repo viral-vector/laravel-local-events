@@ -9,9 +9,7 @@ return [
     |
     */
 
-    'driver' => [
-        env('LOCAL_EVENTS_DRIVER', 'eventful'),
-    ],
+    'driver' => env('LOCAL_EVENTS_DRIVER', 'eventful'),
 
 
     /*
