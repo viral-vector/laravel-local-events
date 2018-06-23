@@ -4,7 +4,6 @@ namespace ViralVector\LocalEvents;
 
 use Illuminate\Support\ServiceProvider;
 use ViralVector\LocalEvents\Contracts\LocalEventsSearchInterface;
-use ViralVector\LocalEvents\Drivers\EventfulLocalEventsDriver;
 
 class LocalEventsServiceProvider extends ServiceProvider
 {

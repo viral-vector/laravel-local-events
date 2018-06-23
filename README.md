@@ -1,5 +1,5 @@
 # Laravel Local Events
-**Alpha 1.0 [not production ready]
+**Alpha 2.0 [production capable]
 
 The aim is to create a simple library for searching for events. 
 This was born out of the "official" Eventful PHP lib being a PER lib & no current Laravel love. 
