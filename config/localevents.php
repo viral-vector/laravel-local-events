@@ -38,7 +38,7 @@ return [
             'key' => env('LOCAL_EVENTS_KEY', null),
             'class' => \ViralVector\LocalEvents\Drivers\EventfulLocalEventsDriver::class,
             'model_map' => [
-                // model_key => api_key or [..api_keys]
+                // model_key => api_key or [..api_keys] or LocalEventMappingInterface
             ]
         ]
     ],

@@ -3,6 +3,7 @@
 namespace ViralVector\LocalEvents\Drivers;
 
 use GuzzleHttp\Client;
+use ViralVector\LocalEvents\CompoundMap;
 use ViralVector\LocalEvents\Contracts\LocalEventsSearchInterface;
 
 class EventfulLocalEventsDriver implements LocalEventsSearchInterface
@@ -75,14 +76,35 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
         $model = config('localevents.model');
         $mapps = config('localevents.config.model_map');
 
-        foreach ($xmlelemt->events as $event) {
-            $item = json_decode(json_encode($event));
+        foreach ($xmlelemt->events->event as $event) {
             if(isset($model)){
-                $model = new $model;
+                $attr = [];
                 foreach ($mapps as $model_key => $api_key){
-                    $model->$model_key = $item->$api_key;
+                    if(get_class($api_key) == CompoundMap::class){
+                        $map = $api_key->getMap();
+                        $data = [];
+                        foreach ($map as $key => $name) {
+                            $value = $event->attributes()->$name ?: $event->$key;
+                            if(isset($value))
+                                $data[] = $value;
+                        }
+                        $data = $api_key->format($data);
+                    } elseif(is_array($api_key)){
+                        $data = [];
+                        foreach ($api_key as $key){
+                            $value = $event->attributes()->$key ?: $event->$key;
+                            if(isset($value))
+                                $data[] = $value;
+                        }
+                        $data = implode(', ', $data);
+                    } else {
+                        $data = $event->attributes()->$api_key ?: $event->$api_key;
+                    }
+                    $attr[$model_key] = (string)$data;
                 }
-                $item = $model;
+                $item = new $model($attr);
+            }else{
+                $item = json_decode(json_encode($event));
             }
             $results->items[] = $item;
         }
