@@ -2,10 +2,6 @@
 
 namespace ViralVector\LocalEvents\Drivers;
 
-use Symfony\Component\Serializer\Serializer;
-use Symfony\Component\Serializer\Encoder\XmlEncoder;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use GuzzleHttp\Client;
 use ViralVector\LocalEvents\Contracts\LocalEventsSearchInterface;
 
@@ -39,11 +35,12 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
     }
 
     /**
-     * @param $query
+     * @param $params
      * @param string $method
      * @return mixed|\Psr\Http\Message\ResponseInterface
+     * @throws \Exception
      */
-    public function search($query, $method = '/events/search')
+    public function search($params, $method = '/events/search')
     {
         $method = trim($method,'/');
 
@@ -52,10 +49,27 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
         $query = new \stdClass();
         $query->app_key = $this->app_key;
 
-        $response = $client->request('GET', $method, [
-            'query' => json_decode(json_encode($query), true)
+        foreach ($params as $key => $value) {
+            $query->$key = $value;
+        }
+
+        $response = $client->request('GET', "/rest/{$method}", [
+            'query' => json_decode(json_encode($query), true),
         ]);
 
-        return $response;
+        $contents = $response->getBody()->getContents();
+
+        if($response->getStatusCode() != 200)
+            throw new \Exception($contents);
+
+        $results = simplexml_load_string($contents);
+
+        if(get_class($results) === \SimpleXMLElement::class){
+            if($results->getName() == 'error'){
+                throw new \Exception(var_dump($results));
+            }
+        }
+
+        return $results;
     }
 }
