@@ -43,13 +43,16 @@ class CompoundMap implements LocalEventMappingInterface
     }
 
     /**
-     * @param $data
-     * @return callable|null
+     * @param array $data
+     * @return array
      */
-    public function format($data): ?callable
+    public function format(array $data)
     {
-        if($this->cal)
-            return $this->cal($data);
+        if($this->cal) {
+            $method = $this->cal;
+
+            return $method($data);
+        }
 
         return $data;
     }

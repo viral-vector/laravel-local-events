@@ -80,16 +80,31 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
             if(isset($model)){
                 $attr = [];
                 foreach ($mapps as $model_key => $api_key){
-                    if(get_class($api_key) == CompoundMap::class){
+                    if(is_object($api_key) && get_class($api_key) == CompoundMap::class){
+
+
                         $map = $api_key->getMap();
                         $data = [];
                         foreach ($map as $key => $name) {
-                            $value = (string)($event->attributes()->$name ?: $event->$name);
+                            if(is_array($name)) {
+                                $value = [];
+                                foreach ($name as $k){
+                                    $part = (string)($event->attributes()->$k ?: $event->$k);
+                                    if(isset($value))
+                                        $value[] = $part;
+                                }
+                            }else {
+                                $value = (string)($event->attributes()->$name ?: $event->$name);
+                            }
+
                             if(isset($value))
                                 $data[$key] = $value;
                         }
                         $data = $api_key->format($data);
+
+
                     } elseif(is_array($api_key)){
+
                         $data = [];
                         foreach ($api_key as $key){
                             $value = (string)($event->attributes()->$key ?: $event->$key);
@@ -97,8 +112,11 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
                                 $data[] = $value;
                         }
                         $data = implode(', ', $data);
+
                     } else {
+
                         $data = (string)($event->attributes()->$api_key ?: $event->$api_key);
+
                     }
                     $attr[$model_key] = $data;
                 }

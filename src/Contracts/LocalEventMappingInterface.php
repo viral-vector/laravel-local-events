@@ -13,5 +13,5 @@ interface LocalEventMappingInterface
 {
     public function getMap();
 
-    public function format($data): ?callable;
+    public function format(array $data);
 }
