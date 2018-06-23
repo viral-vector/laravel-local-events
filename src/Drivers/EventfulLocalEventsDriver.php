@@ -84,23 +84,23 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
                         $map = $api_key->getMap();
                         $data = [];
                         foreach ($map as $key => $name) {
-                            $value = $event->attributes()->$name ?: $event->$key;
+                            $value = (string)($event->attributes()->$name ?: $event->$name);
                             if(isset($value))
-                                $data[] = $value;
+                                $data[$key] = $value;
                         }
                         $data = $api_key->format($data);
                     } elseif(is_array($api_key)){
                         $data = [];
                         foreach ($api_key as $key){
-                            $value = $event->attributes()->$key ?: $event->$key;
+                            $value = (string)($event->attributes()->$key ?: $event->$key);
                             if(isset($value))
                                 $data[] = $value;
                         }
                         $data = implode(', ', $data);
                     } else {
-                        $data = $event->attributes()->$api_key ?: $event->$api_key;
+                        $data = (string)($event->attributes()->$api_key ?: $event->$api_key);
                     }
-                    $attr[$model_key] = (string)$data;
+                    $attr[$model_key] = $data;
                 }
                 $item = new $model($attr);
             }else{
