@@ -47,15 +47,15 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
 
         $client = new Client(['base_uri' => $this->api_root]);
 
-        $query = new \stdClass();
-        $query->app_key = $this->app_key;
+        $query = [];
+        $query['app_key'] = $this->app_key;
 
         foreach ($params as $key => $value) {
-            $query->$key = $value;
+            $query[$key] = $value;
         }
 
         $response = $client->request('GET', "/rest/{$method}", [
-            'query' => json_decode(json_encode($query), true),
+            'query' => $query,
         ]);
 
         $contents = $response->getBody()->getContents();
