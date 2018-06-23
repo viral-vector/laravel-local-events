@@ -88,12 +88,12 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
                             if(is_array($name)) {
                                 $value = [];
                                 foreach ($name as $k){
-                                    $part = (string)$event->$k;
+                                    $part = $event->$k;
                                     if(isset($value))
                                         $value[] = $part;
                                 }
                             }else {
-                                $value = (string)$event->$name;
+                                $value = $event->$name;
                             }
                             if(isset($value))
                                 $data[$key] = $value;
@@ -104,14 +104,14 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
 
                         $data = [];
                         foreach ($api_key as $key){
-                            $value = (string)$event->$key;
+                            $value = $event->$key;
                             if(isset($value))
                                 $data[] = $value;
                         }
                         $data = implode(', ', $data);
 
                     } else {
-                        $data = (string)$event->$api_key;
+                        $data = $event->$api_key;
                     }
                     $attr[$model_key] = $data;
                 }
