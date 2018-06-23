@@ -17,10 +17,10 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
      * @access  public
      * @var     string
      */
-    private $api_root = 'http://api.evdb.com/rest';
+    private $api_root = 'http://api.eventful.com/rest';
 
     /**
-     * Application key (as provided by http://api.evdb.com)
+     * Application key (as provided by http://api.eventful.com)
      *
      * @access  public
      * @var     string
@@ -49,7 +49,7 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
 
         $client = new Client(['base_uri' => $this->api_root]);
 
-        $query = new stdClass();
+        $query = new \stdClass();
         $query->app_key = $this->app_key;
 
         $response = $client->request('GET', $method, [
