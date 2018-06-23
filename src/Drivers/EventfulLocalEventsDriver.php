@@ -14,7 +14,7 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
      * @access  public
      * @var     string
      */
-    private $api_root = 'http://api.eventful.com/rest';
+    private $api_root = 'http://api.eventful.com';
 
     /**
      * Application key (as provided by http://api.eventful.com)
@@ -54,7 +54,7 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
             $query[$key] = $value;
         }
 
-        $response = $client->request('GET', "/rest/{$method}", [
+        $response = $client->request('GET', "/json/{$method}", [
             'query' => $query,
         ]);
 
@@ -63,10 +63,10 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
         if($response->getStatusCode() != 200)
             throw new \Exception($contents);
 
-        $xmlelemt = simplexml_load_string($contents);
+        $jelement = json_decode($contents);
 
-        if($xmlelemt->getName() == 'error'){
-            throw new \Exception(var_dump($xmlelemt));
+        if(isset($jelement->error)){
+            throw new \Exception(get_called_class() . ": {$jelement->description}");
         }
 
         $results = (object)[
@@ -76,12 +76,11 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
         $model = config('localevents.model');
         $mapps = config('localevents.config.model_map');
 
-        foreach ($xmlelemt->events->event as $event) {
+        foreach ($jelement->events->event as $event) {
             if(isset($model)){
                 $attr = [];
                 foreach ($mapps as $model_key => $api_key){
                     if(is_object($api_key) && get_class($api_key) == CompoundMap::class){
-
 
                         $map = $api_key->getMap();
                         $data = [];
@@ -89,40 +88,36 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
                             if(is_array($name)) {
                                 $value = [];
                                 foreach ($name as $k){
-                                    $part = (string)($event->attributes()->$k ?: $event->$k);
+                                    $part = (string)$event->$k;
                                     if(isset($value))
                                         $value[] = $part;
                                 }
                             }else {
-                                $value = (string)($event->attributes()->$name ?: $event->$name);
+                                $value = (string)$event->$name;
                             }
-
                             if(isset($value))
                                 $data[$key] = $value;
                         }
                         $data = $api_key->format($data);
 
-
                     } elseif(is_array($api_key)){
 
                         $data = [];
                         foreach ($api_key as $key){
-                            $value = (string)($event->attributes()->$key ?: $event->$key);
+                            $value = (string)$event->$key;
                             if(isset($value))
                                 $data[] = $value;
                         }
                         $data = implode(', ', $data);
 
                     } else {
-
-                        $data = (string)($event->attributes()->$api_key ?: $event->$api_key);
-
+                        $data = (string)$event->$api_key;
                     }
                     $attr[$model_key] = $data;
                 }
                 $item = new $model($attr);
             }else{
-                $item = json_decode(json_encode($event));
+                $item = $event;
             }
             $results->items[] = $item;
         }
