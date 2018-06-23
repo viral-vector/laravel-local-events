@@ -12,10 +12,21 @@ Eventually i thought, why not pool from multiple sources.
 
 currently just grab this...will composer
 
+    1. php artisan vendor:publish -  the config file
+    2. configure api keys, drivers & mappings in config file
+
 
 ## Example
-   - config & mapping
+   - config 
+    
+    * model  => your model to map
+    * driver => the driver config to load at run
+   
+   
+   - mapping
 ```php
+[model key => api key or [...api keys] or LocalEventMappingInterface]
+
 'model_map' => [
     'id'        => 'id',
     'title'     => 'title',
