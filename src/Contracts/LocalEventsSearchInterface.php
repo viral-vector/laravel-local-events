@@ -4,5 +4,5 @@ namespace ViralVector\LocalEvents\Contracts;
 
 interface LocalEventsSearchInterface
 {
-    public static function search($query, $callback = null);
+    public function search($query, $method = '');
 }

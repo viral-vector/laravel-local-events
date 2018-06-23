@@ -14,9 +14,6 @@
         "phpunit/phpunit": "~5.0"
     },
     "autoload": {
-        "classmap": [
-            "providers"
-        ],
         "psr-4": {
             "ViralVector\\LocalEvents\\": "src/"
         }
