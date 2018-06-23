@@ -31,7 +31,7 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
      */
     function __construct()
     {
-        $this->app_key = config('localevents.key');
+        $this->app_key = config('localevents.config.key');
     }
 
     /**
@@ -62,12 +62,29 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
         if($response->getStatusCode() != 200)
             throw new \Exception($contents);
 
-        $results = simplexml_load_string($contents);
+        $xmlelemt = simplexml_load_string($contents);
 
-        if(get_class($results) === \SimpleXMLElement::class){
-            if($results->getName() == 'error'){
-                throw new \Exception(var_dump($results));
+        if($xmlelemt->getName() == 'error'){
+            throw new \Exception(var_dump($xmlelemt));
+        }
+
+        $results = (object)[
+            'items' => []
+        ];
+
+        $model = config('localevents.model');
+        $mapps = config('localevents.config.model_map');
+
+        foreach ($xmlelemt->events as $event) {
+            $item = json_decode(json_encode($event));
+            if(isset($model)){
+                $model = new $model;
+                foreach ($mapps as $apiKey => $modelAttr){
+                    $model->$modelAttr = $item[$apiKey];
+                }
+                $item = $model;
             }
+            $results->items[] = $item;
         }
 
         return $results;

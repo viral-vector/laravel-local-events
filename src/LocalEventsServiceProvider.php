@@ -25,9 +25,11 @@ class LocalEventsServiceProvider extends ServiceProvider
         }
 
         $this->app->singleton(LocalEventsSearchInterface::class, function ($app) {
-            config(['localevents' => config('localevents.drivers.eventful')]);
+            $driver = config('localevents.driver');
+            
+            config(['localevents.config' => config("localevents.drivers.{$driver}")]);
 
-            return $app->make(EventfulLocalEventsDriver::class);
+            return $app->make(config('localevents.config.class'));
         });
     }
 }
