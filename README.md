@@ -32,16 +32,22 @@ currently just grab this...will composer
     'title'     => 'title',
     'content'   => 'description',
     'timestamp' => 'start_time',
-    'location'  => new \ViralVector\LocalEvents\CompoundMap([
-        'lat'   => 'latitude',
-        'lng'   => 'longitude',
-        'value' => ['venue_name', 'venue_address', 'city_name', 'region_abbr']
-    ], function ($data){
-        $data['value'] = implode(', ', $data['value']);
-
-        return $data;
+    'image'     => new \ViralVector\LocalEvents\CompoundMap(['image'], function ($data){
+      $collection = [];
+      foreach ($data as $image) {
+          $collection[] = $image->medium->url;
+      }
+      return $collection;
     }),
-   'venue'  => ['venue_name', 'venue_address', 'city_name', 'region_abbr'],
+    'location'  => new \ViralVector\LocalEvents\CompoundMap([
+      'lat'   => 'latitude',
+      'lng'   => 'longitude',
+      'tmz'   => 'olson_path',
+      'value' => ['venue_name', 'venue_address', 'city_name', 'region_abbr']
+    ], function ($data){
+      $data['value'] = implode(', ', $data['value']);
+      return $data;
+    })
 ]
 ```
 
