@@ -88,7 +88,7 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
         $mapps = $this->parser->getMap();
 
         foreach ($jelement->events->event as $event) {
-            if(isset($model)){
+            if(isset($this->model)){
                 $attr = [];
                 foreach ($mapps as $model_key => $api_key){
                     if(is_object($api_key) && get_class($api_key) == CompoundMap::class){
@@ -126,7 +126,7 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
                     }
                     $attr[$model_key] = $data;
                 }
-                $item = new $model($attr);
+                $item = new $this->model($attr);
             }else{
                 $item = $event;
             }
