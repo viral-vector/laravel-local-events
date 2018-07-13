@@ -4,6 +4,7 @@ namespace ViralVector\LocalEvents\Drivers;
 
 use GuzzleHttp\Client;
 use ViralVector\LocalEvents\CompoundMap;
+use ViralVector\LocalEvents\Contracts\LocalEventParserInterface;
 use ViralVector\LocalEvents\Contracts\LocalEventsSearchInterface;
 
 class EventfulLocalEventsDriver implements LocalEventsSearchInterface
@@ -25,14 +26,24 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
     private $app_key   = null;
 
     /**
-     * Create a new client
-     *
-     * @access  public
-     * @param   string      app_key
+     * @var null
      */
-    function __construct()
+    private $model   = null;
+
+    /**
+     * @var null|\ViralVector\LocalEvents\Contracts\LocalEventParserInterface
+     */
+    private $parser   = null;
+
+    /**
+     * EventfulLocalEventsDriver constructor.
+     * @param \ViralVector\LocalEvents\Contracts\LocalEventParserInterface $parser
+     */
+    function __construct(LocalEventParserInterface $parser)
     {
         $this->app_key = config('localevents.config.key');
+        $this->model = config('localevents.model');
+        $this->parser = $parser;
     }
 
     /**
@@ -73,8 +84,8 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
             'items' => []
         ];
 
-        $model = config('localevents.model');
-        $mapps = config('localevents.config.model_map');
+
+        $mapps = $this->parser->getMap();
 
         foreach ($jelement->events->event as $event) {
             if(isset($model)){
