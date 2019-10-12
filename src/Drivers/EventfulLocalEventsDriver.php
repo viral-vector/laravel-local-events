@@ -49,8 +49,8 @@ class EventfulLocalEventsDriver implements LocalEventsSearchInterface
     /**
      * @param $params
      * @param string $method
-     * @return mixed|\Psr\Http\Message\ResponseInterface
-     * @throws \Exception
+     * @return object
+     * @throws \GuzzleHttp\Exception\GuzzleException
      */
     public function search($params, $method = '/events/search')
     {
